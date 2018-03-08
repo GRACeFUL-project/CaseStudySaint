@@ -7,3 +7,7 @@
 module ServantAPI where
 
 import Servant
+
+type Resp a = Headers '[] a
+
+type API = "submit" :> Capture "program" String :> Post '[String] (Resp String)
