@@ -1,6 +1,8 @@
 module Main where
 
+import Network.Wai.Handler.Warp (run)
+
 import ServantAPI
 
 main :: IO ()
-main = return ()
+main = run 8081 app
