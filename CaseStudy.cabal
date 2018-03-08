@@ -25,7 +25,7 @@ source-repository head
   type: git
   location: https://github.com/githubuser/CaseStudy
 
-executable CaseStudy-exe
+executable server
   main-is: Main.hs
   hs-source-dirs:
       app
