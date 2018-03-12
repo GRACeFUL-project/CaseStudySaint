@@ -32,6 +32,7 @@ executable server
   ghc-options: -threaded -rtsopts -with-rtsopts=-N
   build-depends:
       Saint
+    , Geometry
     , base >=4.7 && <5
     , servant-server
     , servant-lucid
