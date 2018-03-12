@@ -35,14 +35,14 @@ fishLib = Library "fish"
     Item "blank"          $ blank          ::: image
   , Item "addCubicBezier" $ addCubicBezier ::: point --> point --> point --> point --> image --> image
   , Item "overlay"        $ overlay        ::: image --> image --> image
-  , Item "scale"          $ scale          ::: float --> image --> image
+  , Item "scale"          $ scale 1000.0   ::: image --> image
 
     -- Hendersons functional geometry
   , Item "flip"    $ flip    ::: image --> image
   , Item "over"    $ over    ::: image --> image --> image
-  , Item "besideS" $ besideS ::: float --> float --> image --> image --> image
+  , Item "besideS" $ besideS ::: int   --> int   --> image --> image --> image
   , Item "beside"  $ beside  ::: image --> image --> image
-  , Item "aboveS"  $ aboveS  ::: float --> float --> image --> image --> image
+  , Item "aboveS"  $ aboveS  ::: int   --> int   --> image --> image --> image
   , Item "above"   $ above   ::: image --> image --> image
   , Item "rot"     $ rot     ::: image --> image
   , Item "rot45"   $ rot45   ::: image --> image

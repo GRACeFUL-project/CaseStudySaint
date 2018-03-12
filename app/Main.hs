@@ -8,3 +8,8 @@ main :: IO ()
 main = do
   putStrLn "Starting server on port 8081."
   run 8081 app
+
+
+-- Example call to get 't':
+-- curl -H "Content-Type: application/json" --data '"scale (let fish2 = flip (rot45 fish) in let fish3 = rot (rot (rot fish2)) in over fish (over fish2 fish3))"' http://localhost:8081/submit
+-- 
