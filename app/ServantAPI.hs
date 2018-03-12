@@ -18,17 +18,7 @@ import Image
 import Geometry
 import Saint
 
-{- Saint stuff -}
-type TypeUniverse = A0 Int :+: A1 []
-
-lib :: Library TypeUniverse
-lib = Library "lists"
-  [ Item "map"   $ map ::: (int --> int) --> list int --> list int
-  , Item "range" $ (\a b -> [a..b]) ::: int --> int --> list int
-  , Item "plus"  $ (+) ::: int --> int --> int
-  ]
-
-type Universe = A0 Float :+: A0 Image :+: A0 Point
+type Universe = A0 Int :+: A0 Float :+: A0 Image :+: A0 Point
 
 image :: A0 Image :< t => Type t Image
 image = Base (inject A0)
@@ -45,6 +35,7 @@ fishLib = Library "fish"
     Item "blank"          $ blank          ::: image
   , Item "addCubicBezier" $ addCubicBezier ::: point --> point --> point --> point --> image --> image
   , Item "overlay"        $ overlay        ::: image --> image --> image
+  , Item "scale"          $ scale          ::: float --> image --> image
 
     -- Hendersons functional geometry
   , Item "flip"    $ flip    ::: image --> image
@@ -60,10 +51,12 @@ fishLib = Library "fish"
   , Item "fish"    $ fish ::: image
   ]
 
-runFun :: String -> String
-runFun s = case run (list int) lib s of
-  Left err  -> "Error: " ++ err
-  Right lst -> show lst
+runFun :: String -> IO String
+runFun s = case run image fishLib s of
+  Left err  -> return $ "Error: " ++ err
+  Right img -> do 
+    writeImage "test.png" img
+    return (show img)
 
 {- Servant stuff -}
 type API = "submit" :> ReqBody '[JSON] String :> Post '[HTML] String
@@ -74,7 +67,7 @@ server = submit
 submit :: String -> Handler String
 submit s = do
   liftIO . putStrLn $ "Running program:\n" ++ show s
-  return (runFun s)
+  liftIO (runFun s)
 
 api :: Proxy API
 api = Proxy
