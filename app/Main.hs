@@ -1,13 +1,18 @@
+{-# LANGUAGE OverloadedStrings #-}
+
 module Main where
 
 import Network.Wai.Handler.Warp (run)
+import Network.Wai.Middleware.Cors
 
 import ServantAPI
 
 main :: IO ()
 main = do
   putStrLn "Starting server on port 8081."
-  run 8081 app
+  run 8081 $ cors (const $ Just policy) app
+ where
+  policy = simpleCorsResourcePolicy { corsRequestHeaders = ["content-type"] }
 
 
 -- Example call to get 't':

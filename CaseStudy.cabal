@@ -39,6 +39,7 @@ executable server
     , servant-lucid
     , text
     , warp
+    , wai-cors
   other-modules:
     ServantAPI
   default-language: Haskell2010

@@ -40,7 +40,7 @@ fishLib = Library "fish"
     Item "blank"          $ blank          ::: image
   , Item "addCubicBezier" $ addCubicBezier ::: point --> point --> point --> point --> image --> image
   , Item "overlay"        $ overlay        ::: image --> image --> image
-  , Item "scale"          $ scale 1000.0   ::: image --> image
+  , Item "scale"          $ scale 100.0   ::: image --> image
 
     -- Hendersons functional geometry
   , Item "flip"    $ flip    ::: image --> image
@@ -65,18 +65,13 @@ runFish s = case run image fishLib s of
 
 {- Servant stuff -}
 
-type Resp a = Headers '[Header "Access-Control-Allow-Origin" String] a
-
-hdr :: Handler a -> Handler (Resp a)
-hdr h = h >>= return . addHeader "*"
-
-type API = "submit" :> ReqBody '[JSON] String :> Post '[JSON] (Resp Value)
+type API = "submit" :> ReqBody '[JSON] String :> Post '[JSON] Value
 
 server :: Server API
 server = submit
 
-submit :: String -> Handler (Resp Value)
-submit s = hdr $ do
+submit :: String -> Handler Value
+submit s = do
   liftIO . putStrLn $ "Running program:\n" ++ show s
   liftIO (runFish s)
 
