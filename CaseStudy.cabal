@@ -34,8 +34,10 @@ executable server
       Saint
     , Geometry
     , base >=4.7 && <5
+    , aeson
     , servant-server
     , servant-lucid
+    , text
     , warp
   other-modules:
     ServantAPI

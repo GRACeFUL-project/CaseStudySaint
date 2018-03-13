@@ -44,7 +44,7 @@ extra-deps:
 - git: https://github.com/GRACeFUL-project/Saint.git
   commit: 197cf7ba92b678cfd52a9f0b8f0091fdac50e20d
 - git: https://github.com/GRACeFUL-project/FunctionalGeometry.git
-  commit: 78e9c44c01d94c6bc13824e84bfd66b1f81bd196
+  commit: a15bcf1cacdbd4af419193d5408c016a06914498
   #
 # Override default flag values for local packages and extra-deps
 # flags: {}

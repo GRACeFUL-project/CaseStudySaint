@@ -12,11 +12,16 @@ import Prelude hiding (flip)
 import Servant
 import Servant.HTML.Lucid
 import Control.Monad.IO.Class
+import Data.Aeson.Types hiding (Bool, String, Parser, Options)
+import qualified Data.Aeson.Types as Aeson
+import qualified Data.Text as T
+import Data.Text.Lazy.Encoding
 
 import Fish
 import Image
 import Geometry
 import Saint
+
 
 type Universe = A0 Int :+: A0 Float :+: A0 Image :+: A0 Point
 
@@ -47,27 +52,33 @@ fishLib = Library "fish"
   , Item "rot"     $ rot     ::: image --> image
   , Item "rot45"   $ rot45   ::: image --> image
 
-    -- The fish image
+    -- The fish base image
   , Item "fish"    $ fish ::: image
   ]
 
-runFun :: String -> IO String
-runFun s = case run image fishLib s of
-  Left err  -> return $ "Error: " ++ err
+runFish :: String -> IO Value
+runFish s = case run image fishLib s of
+  Left err  -> return $ Aeson.String $ T.pack $ "Error: " ++ err
   Right img -> do 
-    writeImage "test.png" img
-    return (show img)
+    writeImage "test.png" img  -- for testing purposes
+    return $ object ["img" .= decodeUtf8 (encodeImage img)]
 
 {- Servant stuff -}
-type API = "submit" :> ReqBody '[JSON] String :> Post '[HTML] String
+
+type Resp a = Headers '[Header "Access-Control-Allow-Origin" String] a
+
+hdr :: Handler a -> Handler (Resp a)
+hdr h = h >>= return . addHeader "*"
+
+type API = "submit" :> ReqBody '[JSON] String :> Post '[JSON] (Resp Value)
 
 server :: Server API
 server = submit
 
-submit :: String -> Handler String
-submit s = do
+submit :: String -> Handler (Resp Value)
+submit s = hdr $ do
   liftIO . putStrLn $ "Running program:\n" ++ show s
-  liftIO (runFun s)
+  liftIO (runFish s)
 
 api :: Proxy API
 api = Proxy

@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Henderson's Fish</title>
+  <script src="http://code.jquery.com/jquery-latest.js"></script>
+  <script type="text/javascript" > 
+    $(document).ready(function() { 
+      $.ajax({
+        url: 'http://localhost:8081/submit',
+        dataType: 'json',
+        type: 'post',
+        contentType: 'application/json',
+        data: '"scale (let fish2 = flip (rot45 fish) in let fish3 = rot (rot (rot fish2)) in over fish (over fish2 fish3))"',
+        processData: false,
+        success: function( data, textStatus, jQxhr ){
+          $('#fish').html('<img src="data:image/png;base64,' + data.result + '" />');
+        },
+        error: function( jqXhr, textStatus, errorThrown ){
+            console.log( errorThrown );
+        }
+      });
+    });
+   </script> 
+</head>
+<body>
+  <h1>Henderson's Fish</h1>
+
+  <div id="fish"></div>
+
+</body>
+</html>
