@@ -80,3 +80,15 @@ api = Proxy
 
 app :: Application
 app = serve api server
+
+
+squarelimit = 
+  "let fish2 = flip (rot45 fish) in\n\
+  \let fish3 = rot (rot (rot fish2)) in\n\
+  \let t     = over fish (over fish2 fish3) in\n\
+  \let u     = over (over fish2 (rot fish2)) (over (rot (rot fish2)) (rot (rot (rot fish2)))) in\n\
+  \let qrt   = \\p . \\q . \\r . \\s . above (beside p q) (beside r s) in\n\
+  \let cyc   = \\p . qrt p (rot p) (rot (rot p)) (rot (rot (rot p))) in\n\
+  \let side  = 
+  \scale (cyc fish)"
+
