@@ -22,7 +22,6 @@ import Image
 import Geometry
 import Saint 
 
-
 type Universe = A0 Int :+: A0 Float :+: A0 Image :+: A0 Point
 
 image :: A0 Image :< t => Type t Image
@@ -59,7 +58,7 @@ fishLib = Library "fish"
 
 runFish :: String -> IO Value
 runFish s = case run image fishLib s of
-  Left err  -> return $ Aeson.String $ T.pack $ "Error: " ++ err
+  Left err  -> return $ object ["error" .= T.pack ("Error: " ++ err)]
   Right img -> do 
     writeImage "test.png" img  -- for testing purposes
     return $ object ["img" .= decodeUtf8 (encodeImage img)]

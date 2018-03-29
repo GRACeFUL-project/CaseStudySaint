@@ -17,7 +17,14 @@
           data: '"' + txt + '"',
           processData: false,
           success: function( data, textStatus, jQxhr ){
-            $('#fish').html('<img src="data:image/png;base64,' + data.img + '" />');
+            if(!data.hasOwnProperty('error'))
+            {
+              $('#fish').html('<img src="data:image/png;base64,' + data.img + '" />');
+            }
+            else
+            {
+              console.log ( data.error );
+            }
           },
           error: function( jqXhr, textStatus, errorThrown ){
               console.log( errorThrown );
