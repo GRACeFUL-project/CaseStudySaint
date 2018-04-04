@@ -4,8 +4,8 @@
   <meta charset="utf-8">
   <title>Henderson's Fish</title>
   <script src="http://code.jquery.com/jquery-latest.js"></script>
-  <script type="text/javascript" > 
-    $(document).ready(function() { 
+  <script type="text/javascript" >
+    $(document).ready(function() {
       $('#submit').click(function() {
         txt = $('#program').val();
 
@@ -23,7 +23,7 @@
             }
             else
             {
-              console.log ( data.error );
+              $('#fish').html('<p>' + data.error + '</p>');
             }
           },
           error: function( jqXhr, textStatus, errorThrown ){
@@ -32,7 +32,7 @@
         });
       });
     });
-   </script> 
+   </script>
 </head>
 <body>
   <h1>Henderson's Fish</h1>
