@@ -62,8 +62,12 @@ runFish s = case run image fishLib s of
     writeImage "test.png" img  -- for testing purposes
     return $ object ["img" .= decodeUtf8 (encodeImage img)]
 
-items :: Library t -> [Item t]
-items (Library _ xs) = xs
+describe :: String -> Value
+describe x = case [tv | Item y tv <- items fishLib, x == y] of
+  [tv] -> object ["result" .= T.pack (prettyTypedValue tv)]
+  _    -> object ["error"  .= T.pack "Error: item not found"]
+ where  
+  items (Library _ xs) = xs
 
 -- Pretty printing typed values
 
@@ -97,10 +101,11 @@ instance (Render f, Render g) => Render (CoProduct f g) where
 
 {- Servant stuff -}
 
-type API = "submit" :> ReqBody '[JSON] String :> Post '[JSON] Value
+type API =  "submit"   :> ReqBody '[JSON] String :> Post '[JSON] Value
+       :<|> "describe" :> Capture "id" String    :> Get  '[JSON] Value 
 
 server :: Server API
-server = submit
+server = submit :<|> (return . describe)
 
 submit :: String -> Handler Value
 submit s = do
