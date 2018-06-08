@@ -25,10 +25,10 @@ import Saint
 
 type Universe = A0 Int :+: A0 Image :+: A0 Point
 
-image :: A0 Image :< t => Type t Image
+image :: A0 Image :< t => AnnTypeRep t Image
 image = Base (inject A0)
 
-point :: A0 Point :< t => Type t Point
+point :: A0 Point :< t => AnnTypeRep t Point
 point = Base (inject A0)
 
 scale' i = scale (fromIntegral i)
@@ -74,9 +74,9 @@ describe x = case [tv | Item y tv <- items fishLib, x == y] of
 -- Pretty printing typed values
 
 class Render t where
-  render :: Render t' => t (Type t') a -> String
+  render :: Render t' => t (AnnTypeRep t') a -> String
 
-prettyType :: Render t => Type t a -> String
+prettyType :: Render t => AnnTypeRep t a -> String
 prettyType t = case t of
   Base tr  -> render tr
   Tag s t' -> s ++ " @ " ++ prettyType t'
@@ -101,7 +101,7 @@ instance (Render f, Render g) => Render (CoProduct f g) where
   render (InL x) = render x
   render (InR y) = render y
 
-{- Servant stuff -}
+-- Servant stuff
 
 type API =  "submit"   :> ReqBody '[JSON] String :> Post '[JSON] Value
        :<|> "describe" :> Capture "id" String    :> Get  '[JSON] Value
@@ -119,16 +119,3 @@ api = Proxy
 
 app :: Application
 app = serve api server
-
-squarelimit =
-  "let fish2 = flip (rot45 fish) in\n\
-  \let fish3 = rot (rot (rot fish2)) in\n\
-  \let t     = over fish (over fish2 fish3) in\n\
-  \let u     = over (over fish2 (rot fish2)) (over (rot (rot fish2)) (rot (rot (rot fish2)))) in\n\
-  \let qrt   = \\\\ p . \\\\ q . \\\\ r . \\\\ s . above (beside p q) (beside r s) in\n\
-  \let cyc   = \\\\ p . qrt p (rot p) (rot (rot p)) (rot (rot (rot p))) in\n\
-  \let side  = \\\\ n . natrec blank (\\\\ n . \\\\ img . qrt img img (rot t) t) n in\n\
-  \let corn  = \\\\ n . natrec blank (\\\\ n . \\\\ img . qrt img (side n) (rot (side n)) u) n in\n\
-  \let nnet  = \\\\ p . \\\\ q . \\\\ r . \\\\ s . \\\\ t . \\\\ u . \\\\ v . \\\\ w . \\\\ x . aboveS 1 2 (besideS 1 2 p (beside q r)) (above (besideS 1 2 s (beside t u)) (besideS 1 2 v (beside w x))) in\n\
-  \let sqrl  = \\\\ n . nnet (corn n) (side n) (rot (rot (rot (corn n)))) (rot (side n)) u (rot (rot (rot (side n)))) (rot (corn n)) (rot (rot (side n))) (rot (rot (corn n))) in\n\
-  \scale (sqrl 3)"

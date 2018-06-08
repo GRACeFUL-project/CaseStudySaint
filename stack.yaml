@@ -42,7 +42,7 @@ packages:
 # (e.g., acme-missiles-0.3)
 extra-deps:
 - git: https://github.com/GRACeFUL-project/Saint.git
-  commit: e590c70359aa83be4bfe6c9d99a1179ea15a67ea
+  commit: 55d4cbec957469881e34fa2d9a817632bd18aac6
 - git: https://github.com/GRACeFUL-project/FunctionalGeometry.git
   commit: 0a8f5bdc2e2cd1855bbc2ac24b69a1bc5768dd0b
   #
