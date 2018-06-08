@@ -31,13 +31,15 @@ image = Base (inject A0)
 point :: A0 Point :< t => Type t Point
 point = Base (inject A0)
 
+scale' i = scale (fromIntegral i)
+
 fishLib :: Library Universe
 fishLib = Library "fish"
   [ -- Create images
     Item "blank"          $ blank          ::: image
   , Item "addCubicBezier" $ addCubicBezier ::: point --> point --> point --> point --> image --> image
   , Item "overlay"        $ overlay        ::: image --> image --> image
-  , Item "scale"          $ scale 1000.0   ::: image --> image
+  , Item "scale"          $ scale'         ::: int --> image --> image
 
     -- Hendersons functional geometry
   , Item "flip"    $ flip    ::: image --> image
@@ -48,7 +50,7 @@ fishLib = Library "fish"
   , Item "above"   $ above   ::: image --> image --> image
   , Item "rot"     $ rot     ::: image --> image
   , Item "rot45"   $ rot45   ::: image --> image
-  , Item "natrec"  $ natrec  ::: Tag "Recursion over natural numbers" 
+  , Item "natrec"  $ natrec  ::: Tag "Recursion over natural numbers"
                                $ image --> Tag "The step function" (int --> image --> image) --> int --> image
 
     -- The fish base image
@@ -66,7 +68,7 @@ describe :: String -> Value
 describe x = case [tv | Item y tv <- items fishLib, x == y] of
   [tv] -> object ["result" .= T.pack (prettyTypedValue tv)]
   _    -> object ["error"  .= T.pack "Error: item not found"]
- where  
+ where
   items (Library _ xs) = xs
 
 -- Pretty printing typed values
@@ -102,7 +104,7 @@ instance (Render f, Render g) => Render (CoProduct f g) where
 {- Servant stuff -}
 
 type API =  "submit"   :> ReqBody '[JSON] String :> Post '[JSON] Value
-       :<|> "describe" :> Capture "id" String    :> Get  '[JSON] Value 
+       :<|> "describe" :> Capture "id" String    :> Get  '[JSON] Value
 
 server :: Server API
 server = submit :<|> (return . describe)

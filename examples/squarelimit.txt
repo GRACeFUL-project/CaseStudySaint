@@ -4,8 +4,15 @@ let t     = over fish (over fish2 fish3) in
 let u     = over (over fish2 (rot fish2)) (over (rot (rot fish2)) (rot (rot (rot fish2)))) in
 let qrt   = \\ p . \\ q . \\ r . \\ s . above (beside p q) (beside r s) in
 let cyc   = \\ p . qrt p (rot p) (rot (rot p)) (rot (rot (rot p))) in
-let side  = \\ n . natrec blank (\\ n . \\ img . qrt img img (rot t) t) n in
-let corn  = \\ n . natrec blank (\\ n . \\ img . qrt img (side n) (rot (side n)) u) n in
-let nnet  = \\ p . \\ q . \\ r . \\ s . \\ t . \\ u . \\ v . \\ w . \\ x . aboveS 1 2 (besideS 1 2 p (beside q r)) (above (besideS 1 2 s (beside t u)) (besideS 1 2 v (beside w x))) in
+let side  = natrec blank (\\ n . \\ img . qrt img img (rot t) t)  in
+let corn  = natrec blank (\\ n . \\ img . qrt img (side n) (rot (side n)) u)  in
+let bes3 = \\a . \\ b . \\ c . besideS 1 2 a (beside b c) in
+let abo3 = \\a . \\ b . \\ c . aboveS  1 2 a (above  b c) in
+let nnet  = \\ p . \\ q . \\ r .
+            \\ s . \\ t . \\ u .
+	    \\ v . \\ w . \\ x . abo3  (bes3 p q r)
+	                               (bes3 s t u)
+				       (bes3 v w x) in
 let sqrl  = \\ n . nnet (corn n) (side n) (rot (rot (rot (corn n)))) (rot (side n)) u (rot (rot (rot (side n)))) (rot (corn n)) (rot (rot (side n))) (rot (rot (corn n))) in
-scale (sqrl 3)
+scale 1000 (sqrl 3)
+-- scale 500 (bes3 fish fish2 fish3)
