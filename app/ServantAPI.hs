@@ -4,6 +4,7 @@
 {-# LANGUAGE FlexibleInstances #-}
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE FlexibleContexts #-}
+{-# LANGUAGE GADTs #-}
 
 module ServantAPI where
 
@@ -22,16 +23,13 @@ import Image
 import Geometry
 import Saint
 
-type Universe = A0 Int :+: A0 Float :+: A0 Image :+: A0 Point
+type Universe = A0 Int :+: A0 Image :+: A0 Point
 
 image :: A0 Image :< t => Type t Image
 image = Base (inject A0)
 
 point :: A0 Point :< t => Type t Point
 point = Base (inject A0)
-
-float :: A0 Float :< t => Type t Float
-float = Base (inject A0)
 
 fishLib :: Library Universe
 fishLib = Library "fish"
@@ -50,7 +48,8 @@ fishLib = Library "fish"
   , Item "above"   $ above   ::: image --> image --> image
   , Item "rot"     $ rot     ::: image --> image
   , Item "rot45"   $ rot45   ::: image --> image
-  , Item "natrec"  $ natrec  ::: image --> (int --> image --> image) --> int --> image
+  , Item "natrec"  $ natrec  ::: Tag "Recursion over natural numbers" 
+                               $ image --> Tag "The step function" (int --> image --> image) --> int --> image
 
     -- The fish base image
   , Item "fish"    $ fish ::: image
@@ -62,6 +61,39 @@ runFish s = case run image fishLib s of
   Right img -> do
     writeImage "test.png" img  -- for testing purposes
     return $ object ["img" .= decodeUtf8 (encodeImage img)]
+
+items :: Library t -> [Item t]
+items (Library _ xs) = xs
+
+-- Pretty printing typed values
+
+class Render t where
+  render :: Render t' => t (Type t') a -> String
+
+prettyType :: Render t => Type t a -> String
+prettyType t = case t of
+  Base tr  -> render tr
+  Tag s t' -> s ++ " @ " ++ prettyType t'
+  a :-> b  -> "(" ++ prettyType a ++ " -> " ++ prettyType b ++ ")"
+
+prettyTypedValue :: Render t => TypedValue t -> String
+prettyTypedValue (x ::: t) = prettyType t
+
+instance Render (A0 Bool) where
+  render _ = "Bool"
+
+instance Render (A0 Int) where
+  render _ = "Int"
+
+instance Render (A0 Image) where
+  render _ = "Image"
+
+instance Render (A0 Point) where
+  render _ = "Point"
+
+instance (Render f, Render g) => Render (CoProduct f g) where
+  render (InL x) = render x
+  render (InR y) = render y
 
 {- Servant stuff -}
 
