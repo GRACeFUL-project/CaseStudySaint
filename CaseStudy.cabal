@@ -5,13 +5,13 @@
 -- hash: bb8120a545fd46c8fcb2dde1080c34c3ea8192ffea47e185aeb71485a8404ca1
 
 name:           CaseStudy
-version:        0.1.0.0
+version:        0.1.0.1
 description:    Please see the README on Github at <https://github.com/githubuser/CaseStudy#readme>
 homepage:       https://github.com/githubuser/CaseStudy#readme
 bug-reports:    https://github.com/githubuser/CaseStudy/issues
-author:         Author name here
-maintainer:     example@example.com
-copyright:      2018 Author name here
+author:         Alex Gerdes, Maximilian Algehed, Solrun Halla Einarsdottir, Patrik Jansson
+maintainer:     alex.gerdes@cse.gu.se
+copyright:      2018 Alex Gerdes
 license:        BSD3
 license-file:   LICENSE
 build-type:     Simple
@@ -41,5 +41,5 @@ executable server
     , warp
     , wai-cors
   other-modules:
-    ServantAPI
+    ServantAPI, Example_fish
   default-language: Haskell2010
